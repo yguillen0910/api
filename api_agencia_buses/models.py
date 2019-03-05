@@ -11,11 +11,11 @@ class Pasajero(models.Model):
     Sexo = models.CharField(max_length=1, choices=SEXOS, default='F')
 
     def NombreCompleto(self):
-        cadena = "{0} {1}, {2}"
-        return cadena.format(self.ApellidoPaterno, self.ApellidoMaterno, self.Nombres)
+        cadena = "{0} {1}, {2} {3}"
+        return cadena.format(self.ApellidoPaterno, self.ApellidoMaterno, self.PrimerNombre, self.SegundoNombre)
 
-        def __str__(self):
-            return self.NombreCompleto()
+    def __str__(self):
+        return self.NombreCompleto()
 
 
 class Chofer(models.Model):
@@ -24,6 +24,13 @@ class Chofer(models.Model):
     PrimerNombre = models.CharField(max_length=35)
     SegundoNombre = models.CharField(max_length=35)
     RUT = models.CharField(max_length=8)
+
+    def NombreCompleto(self):
+        cadena = "{0} {1}, {2} {3}"
+        return cadena.format(self.ApellidoPaterno, self.ApellidoMaterno, self.PrimerNombre, self.SegundoNombre)
+
+    def __str__(self):
+        return self.NombreCompleto()
 
 
 class Trayecto(models.Model):
@@ -39,6 +46,9 @@ class Bus(models.Model):
     Placa = models.CharField(max_length=35)
     Chofer = models.ForeignKey(Chofer, on_delete=models.CASCADE)
     Capacidad = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.Placa
 
 
 class Boleto(models.Model):

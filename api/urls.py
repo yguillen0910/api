@@ -25,9 +25,11 @@ router.register(r'choferes', ChoferViewSet)
 router.register(r'horarios', HorarioViewSet)
 router.register(r'boletos', BoletoViewSet)
 router.register(r'buses', BusViewSet)
+router.register(r'pasajeros_horarios', PasajeroHorarioViewSet)
+router.register(r'pasajeros_boletos', PasajeroBoletoViewSet)
 
 urlpatterns = [
-    path(r'buses/', BusListSet.as_view()),
+    path(r'buses_list/', BusListSet.as_view()),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
