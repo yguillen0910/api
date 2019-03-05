@@ -46,7 +46,7 @@ class Boleto(models.Model):
     Pasajero = models.ForeignKey(
         Pasajero, null=False, blank=False, on_delete=models.CASCADE)
     Bus = models.ForeignKey(Bus, null=False, blank=False,
-                            on_delete=models.CASCADE, related_name='boletos')
+                            on_delete=models.CASCADE, related_name='Boletos')
 
 
 class Horario(models.Model):

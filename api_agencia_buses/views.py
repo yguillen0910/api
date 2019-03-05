@@ -1,8 +1,10 @@
 from api_agencia_buses.models import Pasajero, Horario, Bus, Chofer, Trayecto, Boleto
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from api_agencia_buses.serializers import PasajeroSerializer, ChoferSerializer, TrayectoSerializer, BusSerializer, BoletoSerializer, HorarioSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.db.models import Count, F, FloatField
+from django.db.models.functions import Cast
 
 
 class PasajeroViewSet(viewsets.ModelViewSet):
@@ -21,6 +23,22 @@ class BusViewSet(viewsets.ModelViewSet):
 
     queryset = Bus.objects.all()
     serializer_class = BusSerializer
+
+
+class BusListSet(generics.ListAPIView):
+    serializer_class = BusSerializer
+
+    def get_queryset(self):
+        queryset = Bus.objects.all()
+        boletos_vendidos = self.request.query_params.get(
+            'boletos_vendidos', '')
+
+        if boletos_vendidos:
+            queryset = Bus.objects.annotate(porcentaje=Cast(
+                (Count('Boletos') * 100), FloatField())/Cast(F('Capacidad'), FloatField()))
+            return queryset.filter(porcentaje__gte=boletos_vendidos)
+        else:
+            return queryset
 
 
 class ChoferViewSet(viewsets.ModelViewSet):

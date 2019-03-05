@@ -16,9 +16,9 @@ Including another URLconf
 
 from django.urls import include, path
 from rest_framework import routers
-from api_agencia_buses.views import PasajeroViewSet, TrayectoViewSet, ChoferViewSet, HorarioViewSet, BoletoViewSet, BusViewSet
+from api_agencia_buses.views import *
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r'pasajeros', PasajeroViewSet)
 router.register(r'trayectos', TrayectoViewSet)
 router.register(r'choferes', ChoferViewSet)
@@ -27,6 +27,7 @@ router.register(r'boletos', BoletoViewSet)
 router.register(r'buses', BusViewSet)
 
 urlpatterns = [
+    path(r'buses/', BusListSet.as_view()),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
