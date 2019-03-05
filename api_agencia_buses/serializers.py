@@ -7,10 +7,51 @@ class PasajeroSerializer(serializers.HyperlinkedModelSerializer):
         model = Pasajero
         fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
                   'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo')
-        author_id = serializers.IntegerField()
+
+
+class HorarioSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Horario
+        fields = ('url', 'HoraInicio', 'HoraFin', 'Trayecto', 'Bus')
+
+
+class BoletoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Boleto
+        fields = ('url', 'Fecha', 'Bus')
+
+
+class PasajeroBoletoSerializer(serializers.ModelSerializer):
+    boletos = BoletoSerializer(many=False, write_only=True)
+
+    class Meta:
+        model = Pasajero
+        fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
+                  'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo', 'boletos')
 
     def create(self, validated_data):
-        return Pasajero.objects.create(**validated_data)
+        boletos_data = validated_data.pop('boletos')
+        pasajero = Pasajero.objects.create(**validated_data)
+        print(boletos_data)
+        Boleto.objects.create(Pasajero=pasajero, **boletos_data)
+        return pasajero
+
+
+class PasajeroHorarioSerializer(serializers.ModelSerializer):
+    horarios = HorarioSerializer(many=False, write_only=True)
+
+    class Meta:
+        model = Pasajero
+        fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
+                  'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo', 'horarios')
+
+    def create(self, validated_data):
+        horarios_data = validated_data.pop('horarios')
+        pasajero = Pasajero.objects.create(**validated_data)
+        print(horarios_data)
+        for horario_data in horarios_data:
+            Pasajero.objects.create(pasajero=pasajero, *horario_data)
+        return pasajero
 
 
 class ChoferSerializer(serializers.HyperlinkedModelSerializer):
@@ -18,12 +59,6 @@ class ChoferSerializer(serializers.HyperlinkedModelSerializer):
         model = Chofer
         fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
                   'PrimerNombre', 'SegundoNombre', 'RUT')
-
-
-class BoletoSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Boleto
-        fields = ('url', 'Fecha', 'Pasajero', 'Bus')
 
 
 class BusSerializer(serializers.HyperlinkedModelSerializer):
@@ -41,14 +76,6 @@ class BusSerializer(serializers.HyperlinkedModelSerializer):
         porcentaje_vendidos = (total_boletos * 100)/obj.Capacidad
 
         return porcentaje_vendidos
-
-
-class HorarioSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Horario
-        fields = ('url', 'HoraInicio', 'HoraFin', 'Trayecto', 'Bus')
-
-    #Bus = BusSerializer(many=False, read_only=True)
 
 
 class TrayectoSerializer(serializers.HyperlinkedModelSerializer):

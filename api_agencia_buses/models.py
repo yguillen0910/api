@@ -6,16 +6,16 @@ class Pasajero(models.Model):
     ApellidoMaterno = models.CharField(max_length=35)
     PrimerNombre = models.CharField(max_length=35)
     SegundoNombre = models.CharField(max_length=35)
-    RUT = models.CharField(max_length=8)
+    RUT = models.CharField(max_length=8, unique=True)
     SEXOS = (('F', 'Femenino'), ('M', 'Masculino'))
     Sexo = models.CharField(max_length=1, choices=SEXOS, default='F')
 
     def NombreCompleto(self):
-        cadena = "{0} {1}, {2}"
-        return cadena.format(self.ApellidoPaterno, self.ApellidoMaterno, self.Nombres)
+        cadena = "{0} {1}, {2} {3}"
+        return cadena.format(self.ApellidoPaterno, self.ApellidoMaterno, self.PrimerNombre, self.SegundoNombre)
 
-        def __str__(self):
-            return self.NombreCompleto()
+    def __str__(self):
+        return self.NombreCompleto()
 
 
 class Chofer(models.Model):
@@ -23,11 +23,18 @@ class Chofer(models.Model):
     ApellidoMaterno = models.CharField(max_length=35)
     PrimerNombre = models.CharField(max_length=35)
     SegundoNombre = models.CharField(max_length=35)
-    RUT = models.CharField(max_length=8)
+    RUT = models.CharField(max_length=8, unique=True)
+
+    def NombreCompleto(self):
+        cadena = "{0} {1}, {2} {3}"
+        return cadena.format(self.ApellidoPaterno, self.ApellidoMaterno, self.PrimerNombre, self.SegundoNombre)
+
+    def __str__(self):
+        return self.NombreCompleto()
 
 
 class Trayecto(models.Model):
-    Nombre = models.CharField(max_length=35)
+    Nombre = models.CharField(max_length=35, unique=True)
     CiudadSalida = models.CharField(max_length=35)
     CiudadDestino = models.CharField(max_length=35)
 
@@ -36,9 +43,12 @@ class Trayecto(models.Model):
 
 
 class Bus(models.Model):
-    Placa = models.CharField(max_length=35)
-    Chofer = models.ForeignKey(Chofer, on_delete=models.CASCADE)
-    Capacidad = models.PositiveSmallIntegerField()
+    Placa = models.CharField(max_length=35, unique=True)
+    Chofer = models.ForeignKey(Chofer, unique=True, on_delete=models.CASCADE)
+    Capacidad = models.PositiveSmallIntegerField(default=10)
+
+    def __str__(self):
+        return self.Placa
 
 
 class Boleto(models.Model):

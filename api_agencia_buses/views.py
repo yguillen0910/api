@@ -1,6 +1,6 @@
 from api_agencia_buses.models import Pasajero, Horario, Bus, Chofer, Trayecto, Boleto
 from rest_framework import viewsets, generics
-from api_agencia_buses.serializers import PasajeroSerializer, ChoferSerializer, TrayectoSerializer, BusSerializer, BoletoSerializer, HorarioSerializer
+from api_agencia_buses.serializers import PasajeroSerializer, ChoferSerializer, TrayectoSerializer, BusSerializer, BoletoSerializer, HorarioSerializer, PasajeroHorarioSerializer, PasajeroBoletoSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Count, F, FloatField
@@ -17,6 +17,16 @@ class HorarioViewSet(viewsets.ModelViewSet):
 
     queryset = Horario.objects.all()
     serializer_class = HorarioSerializer
+
+
+class PasajeroHorarioViewSet(viewsets.ModelViewSet):
+    queryset = Pasajero.objects.all()
+    serializer_class = PasajeroHorarioSerializer
+
+
+class PasajeroBoletoViewSet(viewsets.ModelViewSet):
+    queryset = Pasajero.objects.all()
+    serializer_class = PasajeroBoletoSerializer
 
 
 class BusViewSet(viewsets.ModelViewSet):
