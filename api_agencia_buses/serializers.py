@@ -29,6 +29,27 @@ class PasajeroBoletoSerializer(serializers.ModelSerializer):
         fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
                   'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo', 'boletos')
 
+
+class HorarioSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Horario
+        fields = ('url', 'HoraInicio', 'HoraFin', 'Trayecto', 'Bus')
+
+
+class BoletoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Boleto
+        fields = ('url', 'Fecha', 'Bus')
+
+
+class PasajeroBoletoSerializer(serializers.ModelSerializer):
+    boletos = BoletoSerializer(many=False, write_only=True)
+
+    class Meta:
+        model = Pasajero
+        fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
+                  'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo', 'boletos')
+
     def create(self, validated_data):
         boletos_data = validated_data.pop('boletos')
         pasajero = Pasajero.objects.create(**validated_data)
@@ -65,6 +86,21 @@ class PasajeroHorarioSerializer(serializers.ModelSerializer):
             Pasajero.objects.create(pasajero=pasajero, *horario_data)
         return pasajero
 
+class PasajeroHorarioSerializer(serializers.ModelSerializer):
+    horarios = HorarioSerializer(many=False, write_only=True)
+
+    class Meta:
+        model = Pasajero
+        fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
+                  'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo', 'horarios')
+
+    def create(self, validated_data):
+        horarios_data = validated_data.pop('horarios')
+        pasajero = Pasajero.objects.create(**validated_data)
+        print(horarios_data)
+        for horario_data in horarios_data:
+            Pasajero.objects.create(pasajero=pasajero, *horario_data)
+        return pasajero
 
 class ChoferSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -88,7 +124,6 @@ class BusSerializer(serializers.HyperlinkedModelSerializer):
         porcentaje_vendidos = (total_boletos * 100)/obj.Capacidad
 
         return porcentaje_vendidos
-
 
 class TrayectoSerializer(serializers.HyperlinkedModelSerializer):
     Promedio = serializers.SerializerMethodField()

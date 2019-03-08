@@ -1,6 +1,6 @@
 from api_agencia_buses.models import Pasajero, Horario, Bus, Chofer, Trayecto, Boleto
 from rest_framework import viewsets, generics
-from api_agencia_buses.serializers import PasajeroSerializer, ChoferSerializer, TrayectoSerializer, BusSerializer, BoletoSerializer, HorarioSerializer, PasajeroHorarioSerializer, PasajeroBoletoSerializer
+from api_agencia_buses.serializers import *
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Count, F, FloatField

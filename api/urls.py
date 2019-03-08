@@ -28,7 +28,6 @@ router.register(r'buses', BusViewSet)
 router.register(r'pasajeros_horarios', PasajeroHorarioViewSet)
 router.register(r'pasajeros_boletos', PasajeroBoletoViewSet)
 
-
 urlpatterns = [
     path(r'buses_list/', BusListSet.as_view()),
     path('', include(router.urls)),
