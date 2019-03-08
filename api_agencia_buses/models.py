@@ -10,12 +10,12 @@ class Pasajero(models.Model):
     SEXOS = (('F', 'Femenino'), ('M', 'Masculino'))
     Sexo = models.CharField(max_length=1, choices=SEXOS, default='F')
 
-    # def NombreCompleto(self):
-    #     cadena = "{0} {1}, {2} {3}"
-    #     return cadena.format(self.ApellidoPaterno, self.ApellidoMaterno, self.PrimerNombre, self.SegundoNombre)
+    def NombreCompleto(self):
+        cadena = "{0} {1}, {2} {3}"
+        return cadena.format(self.ApellidoPaterno, self.ApellidoMaterno, self.PrimerNombre, self.SegundoNombre)
 
-    # def __str__(self):
-    #     return self.NombreCompleto()
+    def __str__(self):
+        return self.NombreCompleto()
 
 
 class Chofer(models.Model):
