@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/django
+api_agencia_buses/migrations/0002_auto_20190308_1430.py
