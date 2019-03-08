@@ -7,7 +7,27 @@ class PasajeroSerializer(serializers.HyperlinkedModelSerializer):
         model = Pasajero
         fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
                   'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo')
-        author_id = serializers.IntegerField()
+
+
+class HorarioSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Horario
+        fields = ('url', 'HoraInicio', 'HoraFin', 'Trayecto', 'Bus')
+
+
+class BoletoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Boleto
+        fields = ('url', 'Fecha', 'Bus')
+
+
+class PasajeroBoletoSerializer(serializers.ModelSerializer):
+    boletos = BoletoSerializer(many=False, write_only=True)
+
+    class Meta:
+        model = Pasajero
+        fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
+                  'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo', 'boletos')
 
 
 class HorarioSerializer(serializers.HyperlinkedModelSerializer):
@@ -33,9 +53,21 @@ class PasajeroBoletoSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         boletos_data = validated_data.pop('boletos')
         pasajero = Pasajero.objects.create(**validated_data)
-        print(boletos_data)
         Boleto.objects.create(Pasajero=pasajero, **boletos_data)
         return pasajero
+
+    # def update(self, instance, validated_data):
+    #     boletos_data = validated_data.pop('boletos')
+    #     #print(boletos_data)
+    #     #print(instance)
+    #     boleto = instance.boletos
+    #     instance.PrimerNombre = validated_data.get(
+    #         'PrimerNombre', instance.PrimerNombre)
+    #     instance.save()
+    #     #print(boletos_data)
+    #     #boleto.Fecha = boletos_data.get('Fecha', boleto.Fecha)
+    #     #boleto.save()
+    #     return instance
 
 
 class PasajeroHorarioSerializer(serializers.ModelSerializer):
@@ -54,6 +86,21 @@ class PasajeroHorarioSerializer(serializers.ModelSerializer):
             Pasajero.objects.create(pasajero=pasajero, *horario_data)
         return pasajero
 
+class PasajeroHorarioSerializer(serializers.ModelSerializer):
+    horarios = HorarioSerializer(many=False, write_only=True)
+
+    class Meta:
+        model = Pasajero
+        fields = ('url', 'ApellidoPaterno', 'ApellidoMaterno',
+                  'PrimerNombre', 'SegundoNombre', 'RUT', 'Sexo', 'horarios')
+
+    def create(self, validated_data):
+        horarios_data = validated_data.pop('horarios')
+        pasajero = Pasajero.objects.create(**validated_data)
+        print(horarios_data)
+        for horario_data in horarios_data:
+            Pasajero.objects.create(pasajero=pasajero, *horario_data)
+        return pasajero
 
 class ChoferSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -78,9 +125,6 @@ class BusSerializer(serializers.HyperlinkedModelSerializer):
 
         return porcentaje_vendidos
 
-    #Bus = BusSerializer(many=False, read_only=True)
-
-
 class TrayectoSerializer(serializers.HyperlinkedModelSerializer):
     Promedio = serializers.SerializerMethodField()
 
@@ -98,8 +142,8 @@ class TrayectoSerializer(serializers.HyperlinkedModelSerializer):
 
         for horario in obj.horarios.all():
             total_boletos += horario.Bus.Boletos.all().count()
-
-        promedio = 0
         if total_bus > 0:
             promedio = total_boletos/total_bus
+        else:
+            promedio = 0
         return promedio
