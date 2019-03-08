@@ -18,7 +18,7 @@ class HorarioSerializer(serializers.HyperlinkedModelSerializer):
 class BoletoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Boleto
-        fields = ('url', 'Fecha', 'Bus')
+        fields = ('url', 'Fecha', 'Bus', 'Pasajero')
 
 
 class PasajeroBoletoSerializer(serializers.ModelSerializer):
@@ -36,14 +36,14 @@ class HorarioSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'HoraInicio', 'HoraFin', 'Trayecto', 'Bus')
 
 
-class BoletoSerializer(serializers.HyperlinkedModelSerializer):
+class BoletoASerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Boleto
         fields = ('url', 'Fecha', 'Bus')
 
 
 class PasajeroBoletoSerializer(serializers.ModelSerializer):
-    boletos = BoletoSerializer(many=False, write_only=True)
+    boletos = BoletoASerializer(many=False, write_only=True)
 
     class Meta:
         model = Pasajero
@@ -86,6 +86,7 @@ class PasajeroHorarioSerializer(serializers.ModelSerializer):
             Pasajero.objects.create(pasajero=pasajero, *horario_data)
         return pasajero
 
+
 class PasajeroHorarioSerializer(serializers.ModelSerializer):
     horarios = HorarioSerializer(many=False, write_only=True)
 
@@ -101,6 +102,7 @@ class PasajeroHorarioSerializer(serializers.ModelSerializer):
         for horario_data in horarios_data:
             Pasajero.objects.create(pasajero=pasajero, *horario_data)
         return pasajero
+
 
 class ChoferSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -124,6 +126,7 @@ class BusSerializer(serializers.HyperlinkedModelSerializer):
         porcentaje_vendidos = (total_boletos * 100)/obj.Capacidad
 
         return porcentaje_vendidos
+
 
 class TrayectoSerializer(serializers.HyperlinkedModelSerializer):
     Promedio = serializers.SerializerMethodField()
