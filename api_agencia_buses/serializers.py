@@ -32,9 +32,21 @@ class PasajeroBoletoSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         boletos_data = validated_data.pop('boletos')
         pasajero = Pasajero.objects.create(**validated_data)
-        print(boletos_data)
         Boleto.objects.create(Pasajero=pasajero, **boletos_data)
         return pasajero
+
+    def update(self, instance, validated_data):
+        boletos_data = validated_data.pop('boletos')
+        # print(boletos_data)
+        # print(instance)
+        #boleto = instance.boletos
+        instance.PrimerNombre = validated_data.get(
+            'PrimerNombre', instance.PrimerNombre)
+        instance.save()
+        # print(boletos_data)
+        #boleto.Fecha = boletos_data.get('Fecha', boleto.Fecha)
+        # boleto.save()
+        return instance
 
 
 class PasajeroHorarioSerializer(serializers.ModelSerializer):
@@ -95,4 +107,8 @@ class TrayectoSerializer(serializers.HyperlinkedModelSerializer):
 
         for horario in obj.horarios.all():
             total_boletos += horario.Bus.Boletos.all().count()
-        return total_boletos/total_bus
+        if total_bus > 0:
+            promedio = total_boletos/total_bus
+        else:
+            promedio = 0
+        return promedio
