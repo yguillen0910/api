@@ -6,14 +6,14 @@ Recomendamos la instalación de _Python_ en su última versión 3.7.2. Encontrar
 
 ## Instalación
 
-1.  `pip3 install virtualenv` para la instalacion de la herramienta _virtualenv_.
+1.  `pip install virtualenv` para la instalacion de la herramienta _virtualenv_.
 2.  `virtualenv api-pasajes` para la creación de un ambiente aislado para la instalación de dependencias.
-3.  Si esta usando un ambiente linux hacer `source api-pasajes/bin/activate` para activar el ambiente. En caso de usar windows puede hacer `env\Scripts\activate`.
-4.  `pip3 install django` para instalar _Django_.
-5.  `pip3 install djangorestframework`.
-6.  `python manage.py migrate` para ejecutar las migraciones a la base de datos (sqlite).
-7.  `pip install django-cors-headersk` para manejo de peticiones.
-8.  `python3 manage.py runserver` para iniciar un servidor de desarrollo.
+3.  Si esta usando un ambiente linux hacer `source api-pasajes/bin/activate` para activar el ambiente. En caso de usar windows puede hacer `source api-pasajes/Scripts/activate`.
+4.  `pip install django` para instalar _Django_.
+5.  `pip install djangorestframework`.
+6.  `pip install django-cors-headers` para manejo de peticiones.(sqlite).
+7.  `python manage.py migrate` para ejecutar las migraciones a la base de datos
+8.  `python manage.py runserver` para iniciar un servidor de desarrollo.
 
 ## Consideraciones finales.
 
